@@ -3,82 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geometry Explorers - Level 1</title>
+    <title>Geometry Explorers</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
         
+        :root {
+            --nature-green: #f2f7f5;
+            --sage-dark: #4a675d;
+            --slate-text: #334155;
+            --soft-accent: #8e9e94;
+        }
+
         body {
             font-family: 'Quicksand', sans-serif;
-            background-color: #f0f9ff;
-        }
-        
-        .title-font {
-            font-family: 'Fredoka One', cursive;
+            background-color: var(--nature-green);
+            color: var(--slate-text);
         }
 
-        .shape-container {
-            min-height: 250px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .pebble-card {
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
         }
 
-        .card-shadow {
-            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        .tab-active {
+            color: var(--sage-dark);
+            border-bottom: 3px solid var(--sage-dark);
         }
 
-        .correct-anim {
-            animation: bounce 0.5s ease;
+        .btn-organic {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .study-item:hover {
+        .btn-organic:hover {
             transform: translateY(-2px);
-            border-color: #3b82f6;
+            background-color: #f8fafc;
+            border-color: var(--soft-accent);
+        }
+
+        .level-badge {
+            background-color: #e2e8f0;
+            color: #475569;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        @keyframes subtle-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .float-anim {
+            animation: subtle-float 4s ease-in-out infinite;
         }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
-    <div id="app" class="max-w-3xl mx-auto bg-white rounded-3xl card-shadow overflow-hidden">
+    <div id="app" class="max-w-3xl mx-auto pebble-card overflow-hidden">
         <!-- Header -->
-        <div class="bg-blue-500 p-6 text-white text-center">
-            <h1 class="text-3xl md:text-4xl title-font tracking-wide">Geometry Explorers</h1>
-            <p class="mt-2 opacity-90">Level 1: Identification & Basics</p>
+        <div class="bg-white px-8 pt-8 pb-4 flex flex-col md:flex-row justify-between items-center border-b border-gray-100">
+            <div class="text-center md:text-left">
+                <h1 class="text-2xl font-bold text-slate-800 flex items-center gap-2 justify-center md:justify-start">
+                    <i data-lucide="compass" class="text-sage-dark"></i>
+                    Geometry Explorers
+                </h1>
+                <p class="text-slate-400 text-sm mt-1">Level <span id="current-level-display">1</span>: <span id="level-name">Identification</span></p>
+            </div>
+            
+            <div class="flex gap-2 mt-4 md:mt-0">
+                <button onclick="changeLevel(1)" id="lvl-1-btn" class="level-badge bg-slate-800 text-white">Lvl 1</button>
+                <button onclick="changeLevel(2)" id="lvl-2-btn" class="level-badge">Lvl 2</button>
+                <button onclick="changeLevel(3)" id="lvl-3-btn" class="level-badge">Lvl 3</button>
+            </div>
         </div>
 
         <!-- Navigation Tabs -->
-        <div class="flex border-b">
-            <button onclick="switchTab('quiz')" id="tab-quiz" class="flex-1 py-4 font-bold text-blue-600 border-b-4 border-blue-600 transition-all">
-                🎯 Play Quiz
+        <div class="flex px-8 border-b border-gray-50">
+            <button onclick="switchTab('quiz')" id="tab-quiz" class="py-4 px-6 font-semibold tab-active flex items-center gap-2">
+                <i data-lucide="play-circle" size="18"></i> Practice
             </button>
-            <button onclick="switchTab('study')" id="tab-study" class="flex-1 py-4 font-bold text-gray-500 border-b-4 border-transparent hover:text-blue-400 transition-all">
-                📚 Study Guide
+            <button onclick="switchTab('study')" id="tab-study" class="py-4 px-6 font-semibold text-gray-400 flex items-center gap-2">
+                <i data-lucide="book-open" size="18"></i> Study Guide
             </button>
         </div>
 
-        <!-- Main Content Area -->
-        <div class="p-6">
-            
+        <div class="p-8">
             <!-- Quiz Section -->
             <div id="quiz-section">
-                <div class="flex justify-between items-center mb-6">
-                    <div class="bg-blue-100 px-4 py-2 rounded-full text-blue-800 font-bold">
+                <div class="flex justify-between items-center mb-8">
+                    <div class="flex items-center gap-2 text-sage-dark font-bold">
+                        <i data-lucide="award" size="20"></i>
                         Score: <span id="score">0</span>
-                    </div>
-                    <div class="text-gray-500 font-medium">
-                        Question <span id="question-num">1</span>
                     </div>
                 </div>
 
-                <div id="quiz-card" class="bg-gray-50 rounded-2xl p-8 mb-6 text-center border-2 border-dashed border-gray-200">
-                    <p class="text-xl font-bold text-gray-700 mb-4">What is the name of this geometric figure?</p>
-                    <div id="shape-display" class="shape-container">
+                <div id="quiz-card" class="bg-slate-50 rounded-3xl p-10 mb-8 text-center border border-slate-100 relative">
+                    <p id="question-text" class="text-lg font-medium text-slate-600 mb-6"></p>
+                    <div id="shape-display" class="shape-container float-anim flex justify-center items-center h-48">
                         <!-- SVG shape injected here -->
                     </div>
                 </div>
@@ -86,197 +112,240 @@
                 <div id="options-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Buttons injected here -->
                 </div>
-
-                <div id="feedback" class="mt-6 text-center text-xl font-bold h-8"></div>
             </div>
 
             <!-- Study Guide Section -->
             <div id="study-section" class="hidden">
-                <h2 class="text-2xl font-bold text-blue-600 mb-4">Geometric Terms Dictionary</h2>
-                <p class="text-gray-500 mb-4 text-sm">Click any term to see a larger view!</p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="study-list">
                     <!-- Items injected here -->
                 </div>
             </div>
-
         </div>
     </div>
 
-    <!-- Universal Modal (for feedback and study expansion) -->
-    <div id="message-box" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center hidden z-50 p-4">
-        <div class="bg-white p-6 md:p-8 rounded-3xl text-center max-w-lg w-full shadow-2xl">
-            <div id="modal-content">
-                <div id="message-icon" class="text-6xl mb-4"></div>
-                <div id="modal-image-container" class="flex justify-center mb-4 bg-gray-50 rounded-xl p-4 hidden"></div>
-                <h3 id="message-title" class="text-2xl font-bold mb-2"></h3>
-                <p id="message-text" class="text-gray-600 mb-6 whitespace-pre-wrap"></p>
-                <button id="modal-btn" onclick="closeMessage()" class="bg-blue-500 text-white px-10 py-3 rounded-full font-bold hover:bg-blue-600 transition-all shadow-lg">Next Question</button>
+    <!-- Modals -->
+    <div id="message-box" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+        <div class="bg-white p-8 rounded-[2.5rem] text-center max-w-lg w-full shadow-2xl">
+            <div id="modal-icon-wrap" class="flex justify-center mb-4">
+                <i id="modal-icon" class="text-sage-dark" size="48"></i>
             </div>
+            <div id="modal-image-container" class="flex justify-center mb-6 bg-slate-50 rounded-2xl p-6 hidden"></div>
+            <h3 id="message-title" class="text-2xl font-bold text-slate-800 mb-2"></h3>
+            <p id="message-text" class="text-slate-500 mb-8 leading-relaxed"></p>
+            <button id="modal-btn" onclick="closeMessage()" class="bg-slate-800 text-white px-12 py-3 rounded-full font-bold hover:bg-slate-700 transition-all">Continue</button>
         </div>
     </div>
 
     <script>
-        // Data Definitions
+        // Shared Markers
+        const markers = `<defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+                <path d="M0 0 L10 5 L0 10 z" fill="#4a675d"/>
+            </marker>
+        </defs>`;
+
         const shapes = [
-            { id: 'point', name: 'Point', definition: 'An exact location in space, represented by a dot.', svg: `<svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="10" fill="#3b82f6" /><text x="65" y="55" font-family="Arial" font-weight="bold">A</text></svg>` },
-            { id: 'line', name: 'Line', definition: 'A straight path that goes on forever in both directions.', svg: `<svg width="100%" height="100" viewBox="0 0 200 100"><line x1="20" y1="50" x2="180" y2="50" stroke="#3b82f6" stroke-width="4" marker-start="url(#arrow)" marker-end="url(#arrow)"/><defs><marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3b82f6" /></marker></defs></svg>` },
-            { id: 'segment', name: 'Line Segment', definition: 'A part of a line with two endpoints.', svg: `<svg width="100%" height="100" viewBox="0 0 200 100"><line x1="40" y1="50" x2="160" y2="50" stroke="#3b82f6" stroke-width="4"/><circle cx="40" cy="50" r="6" fill="#1e40af"/><circle cx="160" cy="50" r="6" fill="#1e40af"/></svg>` },
-            { id: 'ray', name: 'Ray', definition: 'A part of a line that has one endpoint and goes on forever in one direction.', svg: `<svg width="100%" height="100" viewBox="0 0 200 100"><line x1="40" y1="50" x2="180" y2="50" stroke="#3b82f6" stroke-width="4" marker-end="url(#arrow2)"/><circle cx="40" cy="50" r="6" fill="#1e40af"/><defs><marker id="arrow2" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3b82f6" /></marker></defs></svg>` },
-            { id: 'right_tri', name: 'Right Triangle', definition: 'A triangle with exactly one 90-degree (square) angle.', svg: `<svg width="150" height="150" viewBox="0 0 150 150"><path d="M 30 20 L 30 130 L 130 130 Z" fill="none" stroke="#ef4444" stroke-width="4" /><rect x="30" y="115" width="15" height="15" fill="none" stroke="#ef4444" stroke-width="2" /></svg>` },
-            { id: 'equi_tri', name: 'Equilateral Triangle', definition: 'A triangle where all three sides are the same length.', svg: `<svg width="150" height="150" viewBox="0 0 150 150"><path d="M 75 25 L 25 125 L 125 125 Z" fill="none" stroke="#ef4444" stroke-width="4" /></svg>` },
-            { id: 'isos_tri', name: 'Isosceles Triangle', definition: 'A triangle with at least two sides that are the same length.', svg: `<svg width="150" height="150" viewBox="0 0 150 150"><path d="M 75 20 L 40 130 L 110 130 Z" fill="none" stroke="#ef4444" stroke-width="4" /></svg>` },
-            { id: 'scal_tri', name: 'Scalene Triangle', definition: 'A triangle where all three sides have different lengths.', svg: `<svg width="150" height="150" viewBox="0 0 150 150"><path d="M 40 30 L 130 120 L 20 120 Z" fill="none" stroke="#ef4444" stroke-width="4" /></svg>` },
-            { id: 'square', name: 'Square', definition: 'A quadrilateral with 4 equal sides and 4 right angles.', svg: `<svg width="120" height="120" viewBox="0 0 120 120"><rect x="10" y="10" width="100" height="100" fill="none" stroke="#10b981" stroke-width="4" /></svg>` },
-            { id: 'rectangle', name: 'Rectangle', definition: 'A quadrilateral with 4 right angles and opposite sides that are equal.', svg: `<svg width="180" height="120" viewBox="0 0 180 120"><rect x="10" y="20" width="160" height="80" fill="none" stroke="#10b981" stroke-width="4" /></svg>` },
-            { id: 'rhombus', name: 'Rhombus', definition: 'A "leaning" quadrilateral with 4 equal sides.', svg: `<svg width="180" height="120" viewBox="0 0 180 120"><path d="M 50 20 L 160 20 L 130 100 L 20 100 Z" fill="none" stroke="#10b981" stroke-width="4" /></svg>` },
-            { id: 'trapezoid', name: 'Trapezoid', definition: 'A quadrilateral with exactly one pair of parallel sides.', svg: `<svg width="180" height="120" viewBox="0 0 180 120"><path d="M 50 20 L 130 20 L 170 100 L 10 100 Z" fill="none" stroke="#10b981" stroke-width="4" /></svg>` },
-            { id: 'pentagon', name: 'Pentagon', definition: 'A polygon with 5 sides and 5 angles.', svg: `<svg width="150" height="150" viewBox="0 0 150 150"><path d="M 75 20 L 130 60 L 110 125 L 40 125 L 20 60 Z" fill="none" stroke="#8b5cf6" stroke-width="4" /></svg>` },
-            { id: 'hexagon', name: 'Hexagon', definition: 'A polygon with 6 sides and 6 angles.', svg: `<svg width="150" height="150" viewBox="0 0 150 150"><path d="M 75 20 L 125 45 L 125 105 L 75 130 L 25 105 L 25 45 Z" fill="none" stroke="#8b5cf6" stroke-width="4" /></svg>` }
+            // LEVEL 1: ID
+            { level: 1, id: 'point', name: 'Point', definition: 'An exact location in space, represented by a dot.', svg: () => `<svg viewBox="0 0 100 100" width="100"><circle cx="50" cy="50" r="8" fill="#4a675d"/><text x="65" y="55" font-family="Quicksand" font-weight="bold" fill="#334155">P</text></svg>` },
+            { level: 1, id: 'line', name: 'Line', definition: 'A straight path that goes on forever in both directions.', svg: () => `<svg viewBox="0 0 200 100" width="200">${markers}<line x1="20" y1="50" x2="180" y2="50" stroke="#4a675d" stroke-width="3" marker-start="url(#arrow)" marker-end="url(#arrow)"/></svg>` },
+            { level: 1, id: 'segment', name: 'Line Segment', definition: 'A part of a line with two endpoints.', svg: () => `<svg viewBox="0 0 200 100" width="200"><line x1="40" y1="50" x2="160" y2="50" stroke="#4a675d" stroke-width="3"/><circle cx="40" cy="50" r="5" fill="#4a675d"/><circle cx="160" cy="50" r="5" fill="#4a675d"/></svg>` },
+            { level: 1, id: 'ray', name: 'Ray', definition: 'A part of a line with one endpoint that goes on forever in one direction.', svg: () => `<svg viewBox="0 0 200 100" width="200">${markers}<line x1="40" y1="50" x2="170" y2="50" stroke="#4a675d" stroke-width="3" marker-end="url(#arrow)"/><circle cx="40" cy="50" r="5" fill="#4a675d"/></svg>` },
+            { level: 1, id: 'right_tri', name: 'Right Triangle', definition: 'A triangle with exactly one 90-degree square angle.', svg: () => `<svg viewBox="0 0 150 150" width="150"><path d="M40 30 L40 120 L130 120 Z" fill="none" stroke="#4a675d" stroke-width="3"/><rect x="40" y="105" width="15" height="15" fill="none" stroke="#4a675d"/></svg>` },
+            { level: 1, id: 'equi_tri', name: 'Equilateral Triangle', definition: 'A triangle where all three sides and angles are equal.', svg: () => `<svg viewBox="0 0 150 150" width="150"><path d="M75 30 L25 125 L125 125 Z" fill="none" stroke="#4a675d" stroke-width="3"/></svg>` },
+            { level: 1, id: 'isos_tri', name: 'Isosceles Triangle', definition: 'A triangle with at least two sides that are the same length.', svg: () => `<svg viewBox="0 0 150 150" width="150"><path d="M75 25 L45 125 L105 125 Z" fill="none" stroke="#4a675d" stroke-width="3"/></svg>` },
+            { level: 1, id: 'scal_tri', name: 'Scalene Triangle', definition: 'A triangle where all sides have different lengths.', svg: () => `<svg viewBox="0 0 150 150" width="150"><path d="M30 40 L140 130 L10 130 Z" fill="none" stroke="#4a675d" stroke-width="3"/></svg>` },
+            { level: 1, id: 'square', name: 'Square', definition: 'A quadrilateral with 4 equal sides and 4 right angles.', svg: () => `<svg viewBox="0 0 120 120" width="120"><rect x="10" y="10" width="100" height="100" fill="none" stroke="#4a675d" stroke-width="3" /></svg>` },
+            { level: 1, id: 'rectangle', name: 'Rectangle', definition: 'A quadrilateral with 4 right angles and opposite sides that are equal.', svg: () => `<svg viewBox="0 0 180 120" width="180"><rect x="10" y="20" width="160" height="80" fill="none" stroke="#4a675d" stroke-width="3" /></svg>` },
+            { level: 1, id: 'rhombus', name: 'Rhombus', definition: 'A parallelogram with 4 equal sides, looking like a diamond.', svg: () => `<svg viewBox="0 0 180 120" width="180"><path d="M60 20 L170 20 L120 100 L10 100 Z" fill="none" stroke="#4a675d" stroke-width="3" /></svg>` },
+            { level: 1, id: 'trapezoid', name: 'Trapezoid', definition: 'A quadrilateral with exactly one pair of parallel sides.', svg: () => `<svg viewBox="0 0 180 120" width="180"><path d="M50 20 L130 20 L170 100 L10 100 Z" fill="none" stroke="#4a675d" stroke-width="3" /></svg>` },
+            { level: 1, id: 'pentagon', name: 'Pentagon', definition: 'A polygon with 5 sides and 5 angles.', svg: () => `<svg viewBox="0 0 150 150" width="150"><path d="M75 20 L130 60 L110 125 L40 125 L20 60 Z" fill="none" stroke="#4a675d" stroke-width="3" /></svg>` },
+            { level: 1, id: 'hexagon', name: 'Hexagon', definition: 'A polygon with 6 sides and 6 angles.', svg: () => `<svg viewBox="0 0 150 150" width="150"><path d="M75 20 L125 45 L125 105 L75 130 L25 105 L25 45 Z" fill="none" stroke="#4a675d" stroke-width="3" /></svg>` },
+
+            // LEVEL 2: ANGLE MEASURES & MATH
+            { level: 2, id: 'acute', name: 'Acute Angle', definition: 'An angle that measures less than 90 degrees.', svg: () => `<svg viewBox="0 0 150 150" width="150">${markers}<path d="M130 120 L40 120 L100 40" fill="none" stroke="#4a675d" stroke-width="3" marker-start="url(#arrow)" marker-end="url(#arrow)"/></svg>` },
+            { level: 2, id: 'obtuse', name: 'Obtuse Angle', definition: 'An angle that measures more than 90 degrees but less than 180 degrees.', svg: () => `<svg viewBox="0 0 150 150" width="150">${markers}<path d="M130 120 L40 120 L10 40" fill="none" stroke="#4a675d" stroke-width="3" marker-start="url(#arrow)" marker-end="url(#arrow)"/></svg>` },
+            { level: 2, id: 'straight', name: 'Straight Angle', definition: 'An angle that measures exactly 180 degrees, forming a straight line.', svg: () => `<svg viewBox="0 0 200 100" width="200">${markers}<line x1="20" y1="50" x2="180" y2="50" stroke="#4a675d" stroke-width="3" marker-start="url(#arrow)" marker-end="url(#arrow)"/><circle cx="100" cy="50" r="4" fill="#4a675d"/></svg>` },
+            { level: 2, id: 'reflex', name: 'Reflex Angle', definition: 'An angle that measures more than 180 degrees but less than 360 degrees.', svg: () => `<svg viewBox="0 0 150 150" width="150">${markers}<path d="M120 75 L75 75 L110 110" fill="none" stroke="#4a675d" stroke-width="3" marker-start="url(#arrow)" marker-end="url(#arrow)"/><path d="M100 75 A 25 25 0 1 1 93 93" fill="none" stroke="#soft-accent" stroke-width="2"/></svg>` },
+            { level: 2, id: 'add_angle', name: 'Angle Addition', definition: 'If you put two angles together, you add their measures.', question: "Angle A is 30°. Angle B is 45°. What is their total?", options: ["75°", "60°", "90°", "15°"], correct: "75°", svg: () => `<svg viewBox="0 0 200 150" width="200"><path d="M180 120 L40 120 L140 30 M40 120 L170 70" fill="none" stroke="#4a675d" stroke-width="2"/><text x="80" y="110" font-size="12">30°</text><text x="90" y="85" font-size="12">45°</text></svg>` },
+            { level: 2, id: 'sub_angle', name: 'Angle Subtraction', definition: 'If you know the total angle and one part, subtract to find the missing piece.', question: "The total angle is 90°. One part is 40°. What is the missing part?", options: ["50°", "40°", "130°", "60°"], correct: "50°", svg: () => `<svg viewBox="0 0 200 150" width="200"><path d="M40 20 L40 120 L160 120 M40 120 L140 50" fill="none" stroke="#4a675d" stroke-width="2"/><rect x="40" y="105" width="15" height="15" fill="none" stroke="#4a675d"/><text x="120" y="100" font-size="14">?</text><text x="50" y="70" font-size="14">40°</text></svg>` },
+
+            // LEVEL 3: INTERIOR ANGLES
+            { level: 3, id: 'tri_sum', name: 'Triangle Sum', definition: 'The angles inside any triangle always add up to 180 degrees.', question: "In a triangle, two angles are 60° and 60°. What is the 3rd angle?", options: ["60°", "180°", "90°", "30°"], correct: "60°", svg: () => `<svg viewBox="0 0 150 150" width="150"><path d="M75 30 L25 125 L125 125 Z" fill="none" stroke="#4a675d" stroke-width="2"/><text x="65" y="60" font-size="10">?</text><text x="40" y="115" font-size="10">60°</text><text x="95" y="115" font-size="10">60°</text></svg>` },
+            { level: 3, id: 'tri_sum_90', name: 'Triangle Logic', definition: 'The interior angles of a triangle sum to 180°.', question: "A right triangle has one 90° angle and one 45° angle. What is the last angle?", options: ["45°", "90°", "55°", "180°"], correct: "45°", svg: () => `<svg viewBox="0 0 150 150" width="150"><path d="M40 30 L40 120 L130 120 Z" fill="none" stroke="#4a675d" stroke-width="2"/><rect x="40" y="105" width="10" height="10" fill="none" stroke="#4a675d"/><text x="60" y="115" font-size="10">45°</text><text x="45" y="60" font-size="10">?</text></svg>` },
+            { level: 3, id: 'quad_sum', name: 'Quadrilateral Sum', definition: 'The angles inside any 4-sided shape add up to 360 degrees.', question: "The angles of a quadrilateral add up to...", options: ["360°", "180°", "270°", "400°"], correct: "360°", svg: () => `<svg viewBox="0 0 150 150" width="150"><rect x="30" y="40" width="90" height="70" fill="none" stroke="#4a675d" stroke-width="2"/></svg>` },
+            { level: 3, id: 'quad_missing', name: 'Quadrilateral Logic', definition: 'Interior angles of a quadrilateral sum to 360°.', question: "A quadrilateral has three 90° angles. What is the 4th angle?", options: ["90°", "100°", "180°", "45°"], correct: "90°", svg: () => `<svg viewBox="0 0 150 150" width="150"><rect x="30" y="40" width="90" height="70" fill="none" stroke="#4a675d" stroke-width="2"/><text x="40" y="60" font-size="10">90°</text><text x="40" y="100" font-size="10">90°</text><text x="100" y="60" font-size="10">90°</text><text x="100" y="100" font-size="10">?</text></svg>` }
         ];
 
-        let score = 0;
-        let currentQuestion = 0;
-        let correctAnswer = null;
-        let isStudyModal = false;
-
-        // Initialize App
-        window.onload = () => {
-            initStudyGuide();
-            loadQuestion();
+        let state = {
+            level: 1,
+            score: 0,
+            tab: 'quiz',
+            currentQuestion: null,
+            isStudyModal: false,
+            questionPool: []
         };
 
-        function switchTab(tab) {
-            const quizSec = document.getElementById('quiz-section');
-            const studySec = document.getElementById('study-section');
-            const quizBtn = document.getElementById('tab-quiz');
-            const studyBtn = document.getElementById('tab-study');
+        window.onload = () => {
+            lucide.createIcons();
+            updateUI();
+        };
 
-            if (tab === 'quiz') {
-                quizSec.classList.remove('hidden');
-                studySec.classList.add('hidden');
-                quizBtn.className = "flex-1 py-4 font-bold text-blue-600 border-b-4 border-blue-600";
-                studyBtn.className = "flex-1 py-4 font-bold text-gray-500 border-b-4 border-transparent hover:text-blue-400";
+        function updateUI() {
+            [1, 2, 3].forEach(l => {
+                const btn = document.getElementById(`lvl-${l}-btn`);
+                btn.className = `level-badge transition-colors ${state.level === l ? 'bg-slate-800 text-white' : 'bg-slate-200 text-slate-500 hover:bg-slate-300'}`;
+            });
+
+            document.getElementById('current-level-display').innerText = state.level;
+            const levelNames = ["Identification", "Angle Math", "Interior Geometry"];
+            document.getElementById('level-name').innerText = levelNames[state.level - 1];
+
+            if (state.tab === 'quiz') {
+                if (state.questionPool.length === 0) refillPool();
+                loadQuiz();
             } else {
-                quizSec.classList.add('hidden');
-                studySec.classList.remove('hidden');
-                studyBtn.className = "flex-1 py-4 font-bold text-blue-600 border-b-4 border-blue-600";
-                quizBtn.className = "flex-1 py-4 font-bold text-gray-500 border-b-4 border-transparent hover:text-blue-400";
+                loadStudyGuide();
             }
         }
 
-        function initStudyGuide() {
+        function changeLevel(l) {
+            state.level = l;
+            state.questionPool = [];
+            updateUI();
+        }
+
+        function refillPool() {
+            const levelShapes = shapes.filter(s => s.level === state.level);
+            // Shuffle them
+            state.questionPool = [...levelShapes].sort(() => Math.random() - 0.5);
+        }
+
+        function switchTab(t) {
+            state.tab = t;
+            const qBtn = document.getElementById('tab-quiz');
+            const sBtn = document.getElementById('tab-study');
+            
+            if (t === 'quiz') {
+                qBtn.classList.add('tab-active'); qBtn.classList.remove('text-gray-400');
+                sBtn.classList.remove('tab-active'); sBtn.classList.add('text-gray-400');
+                document.getElementById('quiz-section').classList.remove('hidden');
+                document.getElementById('study-section').classList.add('hidden');
+            } else {
+                sBtn.classList.add('tab-active'); sBtn.classList.remove('text-gray-400');
+                qBtn.classList.remove('tab-active'); qBtn.classList.add('text-gray-400');
+                document.getElementById('study-section').classList.remove('hidden');
+                document.getElementById('quiz-section').classList.add('hidden');
+            }
+            updateUI();
+        }
+
+        function loadQuiz() {
+            if (state.questionPool.length === 0) refillPool();
+            
+            state.currentQuestion = state.questionPool.shift();
+            
+            document.getElementById('question-text').innerText = state.currentQuestion.question || "What is the name of this figure?";
+            document.getElementById('shape-display').innerHTML = state.currentQuestion.svg();
+            
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+
+            let options = [];
+            if (state.currentQuestion.options) {
+                options = [...state.currentQuestion.options].sort(() => Math.random() - 0.5);
+            } else {
+                options = [state.currentQuestion.name];
+                const allLevelShapes = shapes.filter(s => s.level === state.level);
+                while (options.length < 4) {
+                    const other = allLevelShapes[Math.floor(Math.random() * allLevelShapes.length)].name;
+                    if (!options.includes(other)) options.push(other);
+                }
+                options.sort(() => Math.random() - 0.5);
+            }
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "btn-organic py-4 px-6 bg-white border border-slate-200 rounded-2xl font-semibold text-slate-700 text-lg shadow-sm";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(opt);
+                grid.appendChild(btn);
+            });
+        }
+
+        function loadStudyGuide() {
             const list = document.getElementById('study-list');
             list.innerHTML = '';
-            shapes.forEach(shape => {
+            shapes.filter(s => s.level <= state.level).forEach(shape => {
                 const item = document.createElement('div');
-                item.className = "study-item bg-white p-4 rounded-xl border-2 border-gray-100 flex items-center shadow-sm cursor-pointer transition-all";
-                item.onclick = () => showStudyDetail(shape);
+                item.className = "bg-white p-4 rounded-2xl border border-slate-100 flex items-center shadow-sm cursor-pointer hover:border-slate-300 transition-all";
+                item.onclick = () => showDetail(shape);
                 item.innerHTML = `
-                    <div class="w-16 h-16 flex-shrink-0 bg-blue-50 rounded-lg mr-4 flex items-center justify-center p-2">
-                        <div class="w-full h-full flex items-center justify-center">
-                            ${shape.svg}
-                        </div>
+                    <div class="w-12 h-12 flex-shrink-0 bg-slate-50 rounded-xl mr-4 flex items-center justify-center p-1">
+                        ${shape.svg()}
                     </div>
                     <div class="overflow-hidden">
-                        <h4 class="font-bold text-blue-600 truncate">${shape.name}</h4>
-                        <p class="text-xs text-gray-500 line-clamp-1">Click for info</p>
+                        <h4 class="font-bold text-slate-700 text-sm truncate">${shape.name}</h4>
+                        <p class="text-xs text-slate-400">Level ${shape.level}</p>
                     </div>
                 `;
                 list.appendChild(item);
             });
         }
 
-        function showStudyDetail(shape) {
-            isStudyModal = true;
-            const modal = document.getElementById('message-box');
-            const title = document.getElementById('message-title');
-            const text = document.getElementById('message-text');
-            const icon = document.getElementById('message-icon');
-            const imgContainer = document.getElementById('modal-image-container');
-            const btn = document.getElementById('modal-btn');
+        function checkAnswer(ans) {
+            state.isStudyModal = false;
+            const correct = state.currentQuestion.correct || state.currentQuestion.name;
+            const isCorrect = (ans === correct);
 
-            icon.innerText = "";
-            imgContainer.innerHTML = `<div class="w-48 h-48 flex items-center justify-center">${shape.svg}</div>`;
-            imgContainer.classList.remove('hidden');
-            
-            title.innerText = shape.name;
-            text.innerText = shape.definition;
-            btn.innerText = "Close";
-            
-            modal.classList.remove('hidden');
-        }
-
-        function loadQuestion() {
-            // Pick a random shape
-            const randomIndex = Math.floor(Math.random() * shapes.length);
-            const questionShape = shapes[randomIndex];
-            correctAnswer = questionShape;
-
-            // Update UI
-            document.getElementById('shape-display').innerHTML = questionShape.svg;
-            document.getElementById('question-num').innerText = currentQuestion + 1;
-            
-            // Create options (Correct answer + 3 random ones)
-            let options = [questionShape];
-            while (options.length < 4) {
-                const randomOption = shapes[Math.floor(Math.random() * shapes.length)];
-                if (!options.find(o => o.id === randomOption.id)) {
-                    options.push(randomOption);
-                }
-            }
-            
-            // Shuffle options
-            options.sort(() => Math.random() - 0.5);
-
-            // Render buttons
-            const grid = document.getElementById('options-grid');
-            grid.innerHTML = '';
-            options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = "py-4 px-6 bg-white border-2 border-gray-200 rounded-xl font-bold text-gray-700 hover:border-blue-400 hover:bg-blue-50 transition-all text-lg";
-                btn.innerText = opt.name;
-                btn.onclick = () => checkAnswer(opt.id);
-                grid.appendChild(btn);
-            });
-            
-            document.getElementById('feedback').innerText = '';
-        }
-
-        function checkAnswer(selectedId) {
-            isStudyModal = false;
-            const modal = document.getElementById('message-box');
-            const title = document.getElementById('message-title');
-            const text = document.getElementById('message-text');
-            const icon = document.getElementById('message-icon');
-            const imgContainer = document.getElementById('modal-image-container');
-            const btn = document.getElementById('modal-btn');
-
-            imgContainer.classList.add('hidden');
-            btn.innerText = "Next Question";
-
-            if (selectedId === correctAnswer.id) {
-                score += 10;
-                document.getElementById('score').innerText = score;
-                icon.innerText = "🌟";
-                title.innerText = "Awesome!";
-                text.innerHTML = `<span class="text-blue-600 font-bold">${correctAnswer.name}:</span>\n${correctAnswer.definition}`;
-                document.getElementById('shape-display').classList.add('correct-anim');
+            if (isCorrect) {
+                state.score += 10;
             } else {
-                icon.innerText = "💡";
-                title.innerText = "Keep Learning!";
-                text.innerHTML = `That was a <span class="text-blue-600 font-bold">${correctAnswer.name}</span>.\n\nRemember: ${correctAnswer.definition}`;
+                // If wrong, add it back to the end of the pool so they try it again later
+                state.questionPool.push(state.currentQuestion);
             }
             
+            document.getElementById('score').innerText = state.score;
+
+            showModal(
+                isCorrect ? 'check-circle' : 'help-circle',
+                isCorrect ? 'Wonderful!' : 'Keep Practicing',
+                isCorrect 
+                    ? `Correct! ${state.currentQuestion.name}: ${state.currentQuestion.definition}`
+                    : `That was actually a ${correct}.\n\nRemember: ${state.currentQuestion.definition}`,
+                null
+            );
+        }
+
+        function showDetail(shape) {
+            state.isStudyModal = true;
+            showModal('info', shape.name, shape.definition, shape.svg());
+        }
+
+        function showModal(iconName, title, text, imgSvg) {
+            const modal = document.getElementById('message-box');
+            document.getElementById('message-title').innerText = title;
+            document.getElementById('message-text').innerText = text;
+            
+            const icon = document.getElementById('modal-icon');
+            icon.setAttribute('data-lucide', iconName);
+            
+            const imgCont = document.getElementById('modal-image-container');
+            if (imgSvg) {
+                imgCont.innerHTML = `<div class="w-48 h-48 flex items-center justify-center">${imgSvg}</div>`;
+                imgCont.classList.remove('hidden');
+            } else {
+                imgCont.classList.add('hidden');
+            }
+
+            document.getElementById('modal-btn').innerText = state.isStudyModal ? "Got it" : "Next Question";
+
             modal.classList.remove('hidden');
+            lucide.createIcons();
         }
 
         function closeMessage() {
             document.getElementById('message-box').classList.add('hidden');
-            if (!isStudyModal) {
-                document.getElementById('shape-display').classList.remove('correct-anim');
-                currentQuestion++;
-                loadQuestion();
-            }
+            if (!state.isStudyModal) updateUI();
         }
     </script>
 </body>
